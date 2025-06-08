@@ -6,6 +6,7 @@ import { geistMono, geistSans } from "@/lib/fonts";
 import "@/styles/globals.css";
 
 import { Toaster } from "@/components/ui/sonner";
+import { TRPCReactProvider } from "@/trpc/react";
 
 export const metadata: Metadata = {
 	title: "Talkintak",
@@ -31,7 +32,7 @@ export default function RootLayout({
 					enableSystem
 					disableTransitionOnChange
 				>
-					{children}
+					<TRPCReactProvider>{children}</TRPCReactProvider>
 					<Toaster position="top-center" richColors />
 				</ThemeProvider>
 			</body>
