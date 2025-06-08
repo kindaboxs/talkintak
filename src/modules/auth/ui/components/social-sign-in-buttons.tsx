@@ -19,7 +19,7 @@ export const SocialSignInButtons = ({
 				variant="outline"
 				type="button"
 				className="w-full"
-				disabled={onPending || onSocialPending === "google"}
+				disabled={!!onPending || onSocialPending === "google"}
 				onClick={() => onSocialSignIn?.("google")}
 			>
 				<FaGoogle />
@@ -28,7 +28,7 @@ export const SocialSignInButtons = ({
 				variant="outline"
 				type="button"
 				className="w-full"
-				disabled={onPending || onSocialPending === "github"}
+				disabled={!!onPending || onSocialPending === "github"}
 				onClick={() => onSocialSignIn?.("github")}
 			>
 				<FaGithub />

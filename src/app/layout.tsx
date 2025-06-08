@@ -5,6 +5,8 @@ import { geistMono, geistSans } from "@/lib/fonts";
 
 import "@/styles/globals.css";
 
+import { Toaster } from "@/components/ui/sonner";
+
 export const metadata: Metadata = {
 	title: "Talkintak",
 	description: "Talkintak - AI Conversation",
@@ -30,6 +32,7 @@ export default function RootLayout({
 					disableTransitionOnChange
 				>
 					{children}
+					<Toaster position="top-center" richColors />
 				</ThemeProvider>
 			</body>
 		</html>
