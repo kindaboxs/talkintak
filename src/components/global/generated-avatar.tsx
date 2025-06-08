@@ -1,3 +1,5 @@
+import { useMemo } from "react";
+
 import { botttsNeutral, initials, thumbs } from "@dicebear/collection";
 import { createAvatar } from "@dicebear/core";
 
@@ -15,27 +17,28 @@ export const GeneratedAvatar = ({
 	className,
 	variant = "initials",
 }: Props) => {
-	let avatar;
+	const avatar = useMemo(() => {
+		const variants = {
+			"bottts-neutral": () => createAvatar(botttsNeutral, { seed }),
+			thumbs: () => createAvatar(thumbs, { seed }),
+			initials: () =>
+				createAvatar(initials, { seed, fontSize: 42, fontWeight: 500 }),
+		};
+		return variants[variant]();
+	}, [variant, seed]);
 
-	if (variant === "bottts-neutral") {
-		avatar = createAvatar(botttsNeutral, {
-			seed,
-		});
-	} else if (variant === "thumbs") {
-		avatar = createAvatar(thumbs, {
-			seed,
-		});
-	} else {
-		avatar = createAvatar(initials, {
-			seed,
-			fontWeight: 500,
-			fontSize: 42,
-		});
-	}
+	const avatarUri = useMemo(() => {
+		try {
+			return avatar.toDataUri();
+		} catch (error) {
+			console.warn("Failed to generate avatar:", error);
+			return "";
+		}
+	}, [avatar]);
 
 	return (
 		<Avatar className={cn(className)}>
-			<AvatarImage src={avatar.toDataUri()} alt={seed} />
+			<AvatarImage src={avatarUri} alt={seed} />
 			<AvatarFallback>{seed.charAt(0).toUpperCase()}</AvatarFallback>
 		</Avatar>
 	);

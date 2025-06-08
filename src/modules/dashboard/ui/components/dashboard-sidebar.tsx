@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
 import { BotIcon, StarIcon, VideoIcon } from "lucide-react";
+import { toast } from "sonner";
 
 import { BoxsIcon } from "@/components/global/boxs-icon";
 import {
@@ -57,6 +58,12 @@ export const DashboardSidebar = () => {
 			fetchOptions: {
 				onSuccess: () => {
 					router.refresh();
+				},
+				onError: (ctx) => {
+					toast.error("Sign out failed", {
+						id: "sign-out-error",
+						description: ctx.error.message,
+					});
 				},
 			},
 		});
