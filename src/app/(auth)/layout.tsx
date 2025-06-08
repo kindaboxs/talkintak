@@ -1,18 +1,15 @@
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
-import { auth } from "@/lib/auth";
+import { getSessionAction } from "@/actions/get-session-action";
 
 interface Props {
 	children: React.ReactNode;
 }
 
 export default async function AuthLayout({ children }: Props) {
-	const session = await auth.api.getSession({
-		headers: await headers(),
-	});
+	const session = await getSessionAction();
 
-	if (session) return redirect("/");
+	if (!!session) return redirect("/");
 
 	return (
 		<div className="bg-muted flex min-h-dvh flex-col items-center justify-center p-6 md:p-10">

@@ -4,16 +4,23 @@ import { Button } from "@/components/ui/button";
 
 interface Props {
 	onPending?: boolean;
+	onSocialSignIn?: (provider: "github" | "google") => Promise<void>;
+	onSocialPending?: "github" | "google" | null;
 }
 
-export const SocialSignInButtons = ({ onPending }: Props) => {
+export const SocialSignInButtons = ({
+	onPending,
+	onSocialSignIn,
+	onSocialPending,
+}: Props) => {
 	return (
 		<div className="grid grid-cols-2 gap-4">
 			<Button
 				variant="outline"
 				type="button"
 				className="w-full"
-				disabled={onPending}
+				disabled={onPending ?? onSocialPending === "google"}
+				onClick={() => onSocialSignIn?.("google")}
 			>
 				<FaGoogle />
 			</Button>
@@ -21,7 +28,8 @@ export const SocialSignInButtons = ({ onPending }: Props) => {
 				variant="outline"
 				type="button"
 				className="w-full"
-				disabled={onPending}
+				disabled={onPending ?? onSocialPending === "github"}
+				onClick={() => onSocialSignIn?.("github")}
 			>
 				<FaGithub />
 			</Button>

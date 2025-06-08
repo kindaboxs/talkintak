@@ -28,6 +28,9 @@ import { SocialSignInButtons } from "@/modules/auth/ui/components/social-sign-in
 
 export const SignInView = () => {
 	const [pending, setPending] = useState<boolean>(false);
+	const [socialPending, setSocialPending] = useState<
+		"github" | "google" | null
+	>(null);
 	const [error, setError] = useState<string | null>(null);
 
 	const router = useRouter();
@@ -50,6 +53,7 @@ export const SignInView = () => {
 			{
 				onRequest: () => {
 					setPending(true);
+					setError(null);
 				},
 				onSuccess: () => {
 					setPending(false);
@@ -57,6 +61,24 @@ export const SignInView = () => {
 				},
 				onError: (ctx) => {
 					setPending(false);
+					setError(ctx.error?.message);
+				},
+			}
+		);
+	};
+
+	const onSocialSignIn = async (provider: "github" | "google") => {
+		await signIn.social(
+			{ provider, callbackURL: "/" },
+			{
+				onRequest: () => {
+					setSocialPending(provider);
+				},
+				onSuccess: () => {
+					setSocialPending(null);
+				},
+				onError: (ctx) => {
+					setSocialPending(null);
 					setError(ctx.error?.message);
 				},
 			}
@@ -152,7 +174,11 @@ export const SignInView = () => {
 									<Separator className="flex-1" />
 								</div>
 
-								<SocialSignInButtons onPending={pending} />
+								<SocialSignInButtons
+									onPending={pending}
+									onSocialSignIn={onSocialSignIn}
+									onSocialPending={socialPending}
+								/>
 
 								<div className="flex items-center justify-center gap-2">
 									<p className="text-muted-foreground text-sm">
