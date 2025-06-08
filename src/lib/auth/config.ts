@@ -24,6 +24,18 @@ export const authConfig = {
 		minPasswordLength: 8,
 		maxPasswordLength: 128,
 	},
+	socialProviders: {
+		google: {
+			enabled: true,
+			clientId: env.GOOGLE_CLIENT_ID,
+			clientSecret: env.GOOGLE_CLIENT_SECRET,
+		},
+		github: {
+			enabled: true,
+			clientId: env.GITHUB_CLIENT_ID,
+			clientSecret: env.GITHUB_CLIENT_SECRET,
+		},
+	},
 	plugins: [nextCookies()],
 	secret: env.BETTER_AUTH_SECRET,
 } satisfies BetterAuthOptions;
