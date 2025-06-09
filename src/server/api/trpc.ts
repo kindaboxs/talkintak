@@ -26,11 +26,8 @@ import { db } from "@/server/db";
  * @see https://trpc.io/docs/server/context
  */
 export const createTRPCContext = async (opts: { headers: Headers }) => {
-	const session = await getSessionAction();
-
 	return {
 		db,
-		session,
 		...opts,
 	};
 };
@@ -101,7 +98,9 @@ const timingMiddleware = t.middleware(async ({ next, path }) => {
 });
 
 const sessionMiddleware = t.middleware(async ({ next, ctx }) => {
-	if (!ctx.session) {
+	const session = await getSessionAction();
+
+	if (!session) {
 		throw new TRPCError({ code: "UNAUTHORIZED", message: "Unauthorized" });
 	}
 
@@ -109,8 +108,8 @@ const sessionMiddleware = t.middleware(async ({ next, ctx }) => {
 		ctx: {
 			...ctx,
 			auth: {
-				session: ctx.session.session,
-				user: ctx.session.user,
+				session: session.session,
+				user: session.user,
 			},
 		},
 	});
@@ -123,5 +122,6 @@ const sessionMiddleware = t.middleware(async ({ next, ctx }) => {
  * guarantee that a user querying is authorized, but you can still access user session data if they
  * are logged in.
  */
-export const publicProcedure = t.procedure.use(timingMiddleware);
-export const protectedProcedure = t.procedure.use(sessionMiddleware);
+export const baseProcedure = t.procedure;
+export const publicProcedure = baseProcedure.use(timingMiddleware);
+export const protectedProcedure = publicProcedure.use(sessionMiddleware);
