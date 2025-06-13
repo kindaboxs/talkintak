@@ -1,6 +1,7 @@
 import { FlatCompat } from "@eslint/eslintrc";
 // @ts-ignore -- no types for this plugin
 import drizzle from "eslint-plugin-drizzle";
+import eslintReactHooks from "eslint-plugin-react-hooks";
 import tseslint from "typescript-eslint";
 
 const compat = new FlatCompat({
@@ -16,6 +17,7 @@ export default tseslint.config(
 		files: ["**/*.ts", "**/*.tsx"],
 		plugins: {
 			drizzle,
+			eslintReactHooks,
 		},
 		extends: [
 			...tseslint.configs.recommended,

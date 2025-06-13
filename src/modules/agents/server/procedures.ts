@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { eq, getTableColumns } from "drizzle-orm";
 import { z } from "zod";
 
 import { agentInsertSchema } from "@/modules/agents/schemas";
@@ -10,7 +10,9 @@ export const agentsRouter = createTRPCRouter({
 		.input(z.object({ id: z.string() }))
 		.query(async ({ ctx, input }) => {
 			const [existingAgent] = await ctx.db
-				.select()
+				.select({
+					...getTableColumns(agents),
+				})
 				.from(agents)
 				.where(eq(agents.id, input.id));
 
