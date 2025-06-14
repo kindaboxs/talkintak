@@ -31,7 +31,7 @@ export const AgentForm = ({ initialValues, onCancel, onSuccess }: Props) => {
 	const utils = api.useUtils();
 	const createAgent = api.agents.create.useMutation({
 		onSuccess: async () => {
-			await utils.agents.getMany.invalidate();
+			await utils.agents.getMany.invalidate({});
 
 			if (initialValues?.id) {
 				await utils.agents.getOne.invalidate({ id: initialValues.id });

@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 
+import { NuqsAdapter } from "nuqs/adapters/next/app";
+
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { geistMono, geistSans } from "@/lib/fonts";
 
@@ -32,7 +34,9 @@ export default function RootLayout({
 					enableSystem
 					disableTransitionOnChange
 				>
-					<TRPCReactProvider>{children}</TRPCReactProvider>
+					<NuqsAdapter>
+						<TRPCReactProvider>{children}</TRPCReactProvider>
+					</NuqsAdapter>
 					<Toaster position="top-center" richColors />
 				</ThemeProvider>
 			</body>
