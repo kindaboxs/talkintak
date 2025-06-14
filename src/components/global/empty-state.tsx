@@ -1,7 +1,5 @@
 import Image from "next/image";
 
-import { AlertCircleIcon } from "lucide-react";
-
 interface Props {
 	title: string;
 	description: string;

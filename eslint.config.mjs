@@ -2,6 +2,7 @@ import { FlatCompat } from "@eslint/eslintrc";
 // @ts-ignore -- no types for this plugin
 import drizzle from "eslint-plugin-drizzle";
 import eslintReactHooks from "eslint-plugin-react-hooks";
+import nextPlugin from "@next/eslint-plugin-next";
 import tseslint from "typescript-eslint";
 
 const compat = new FlatCompat({
@@ -10,14 +11,15 @@ const compat = new FlatCompat({
 
 export default tseslint.config(
 	{
-		ignores: [".next"],
+		ignores: [".next", "src/components/ui/**"],
 	},
 	...compat.extends("next/core-web-vitals"),
 	{
 		files: ["**/*.ts", "**/*.tsx"],
 		plugins: {
 			drizzle,
-			eslintReactHooks,
+			"react-hooks": eslintReactHooks,
+			next: nextPlugin,
 		},
 		extends: [
 			...tseslint.configs.recommended,
@@ -52,6 +54,12 @@ export default tseslint.config(
 				"error",
 				{ drizzleObjectName: ["db", "ctx.db"] },
 			],
+			"react-hooks/rules-of-hooks": "error",
+			"react-hooks/exhaustive-deps": "warn",
+			"next/no-html-link-for-pages": "error",
+			"next/no-img-element": "warn",
+			"next/no-unwanted-polyfillio": "warn",
+			"next/no-duplicate-head": "error",
 		},
 	},
 	{
