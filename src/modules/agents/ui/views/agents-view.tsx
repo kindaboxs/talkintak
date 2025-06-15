@@ -1,5 +1,7 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
 import { EmptyState } from "@/components/global/empty-state";
 import { ErrorState } from "@/components/global/error-state";
 import { LoadingState } from "@/components/global/loading-state";
@@ -11,11 +13,18 @@ import { api } from "@/trpc/react";
 
 export const AgentsView = () => {
 	const [filters, setFilters] = useAgentsFilters();
+
+	const router = useRouter();
+
 	const [data] = api.agents.getMany.useSuspenseQuery({ ...filters });
 
 	return (
 		<div className="flex flex-1 flex-col gap-4 px-4 pb-4 md:px-8">
-			<DataTable columns={columns} data={data.items} />
+			<DataTable
+				columns={columns}
+				data={data.items}
+				onRowClick={(row) => router.push(`/agents/${row.id}`)}
+			/>
 
 			<DataPagination
 				page={filters.page}
