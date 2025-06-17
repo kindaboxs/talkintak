@@ -14,6 +14,10 @@ export const agentInsertSchema = z.object({
 
 export type AgentInsertSchemaType = z.infer<typeof agentInsertSchema>;
 
+export const agentUpdateSchema = agentInsertSchema.extend({
+	id: z.string().min(1, { message: "Id is required" }),
+});
+
 export const filtersInputSchema = z.object({
 	page: z.number().default(DEFAULT_PAGE),
 	pageSize: z

@@ -4,12 +4,52 @@ import { z } from "zod";
 
 import {
 	agentInsertSchema,
+	agentUpdateSchema,
 	filtersInputSchema,
 } from "@/modules/agents/schemas";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { agents } from "@/server/db/schema";
 
 export const agentsRouter = createTRPCRouter({
+	update: protectedProcedure
+		.input(agentUpdateSchema)
+		.mutation(async ({ ctx, input }) => {
+			const [updateAgent] = await ctx.db
+				.update(agents)
+				.set(input)
+				.where(
+					and(eq(agents.id, input.id), eq(agents.userId, ctx.auth.user.id))
+				)
+				.returning();
+
+			if (!updateAgent) {
+				throw new TRPCError({
+					code: "NOT_FOUND",
+					message: "Agent not found",
+				});
+			}
+
+			return updateAgent;
+		}),
+	remove: protectedProcedure
+		.input(z.object({ id: z.string() }))
+		.mutation(async ({ ctx, input }) => {
+			const [removeAgent] = await ctx.db
+				.delete(agents)
+				.where(
+					and(eq(agents.id, input.id), eq(agents.userId, ctx.auth.user.id))
+				)
+				.returning();
+
+			if (!removeAgent) {
+				throw new TRPCError({
+					code: "NOT_FOUND",
+					message: "Agent not found",
+				});
+			}
+
+			return removeAgent;
+		}),
 	getOne: protectedProcedure
 		.input(z.object({ id: z.string() }))
 		.query(async ({ ctx, input }) => {
