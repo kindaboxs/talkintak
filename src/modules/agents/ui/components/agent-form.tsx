@@ -33,6 +33,24 @@ export const AgentForm = ({ initialValues, onCancel, onSuccess }: Props) => {
 		onSuccess: async () => {
 			await utils.agents.getMany.invalidate({});
 
+			// TODO: invalidate free tier usage
+
+			onSuccess?.();
+		},
+
+		onError: (error) => {
+			toast.error("Failed to create agent", {
+				id: "create-agent-error",
+				description: error.message,
+			});
+
+			// TODO: check if error code is "FORBIDDEN", redirect to "/upgrade"
+		},
+	});
+	const updateAgent = api.agents.update.useMutation({
+		onSuccess: async () => {
+			await utils.agents.getMany.invalidate({});
+
 			if (initialValues?.id) {
 				await utils.agents.getOne.invalidate({ id: initialValues.id });
 			}
@@ -41,8 +59,8 @@ export const AgentForm = ({ initialValues, onCancel, onSuccess }: Props) => {
 		},
 
 		onError: (error) => {
-			toast.error("Failed to create agent", {
-				id: "create-agent-error",
+			toast.error("Failed to update agent", {
+				id: "update-agent-error",
 				description: error.message,
 			});
 
@@ -59,12 +77,15 @@ export const AgentForm = ({ initialValues, onCancel, onSuccess }: Props) => {
 	});
 
 	const isEdit = !!initialValues?.id;
-	const isPending = createAgent.isPending;
+	const isPending = createAgent.isPending || updateAgent.isPending;
 
 	const onSubmitForm = (values: AgentInsertSchemaType) => {
 		if (isEdit) {
 			// update
-			console.log(values);
+			updateAgent.mutate({
+				...values,
+				id: initialValues.id,
+			});
 		} else {
 			// create
 			createAgent.mutate(values);
