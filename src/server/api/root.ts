@@ -1,5 +1,5 @@
 import { agentsRouter } from "@/modules/agents/server/procedures";
-import { postRouter } from "@/server/api/routers/posts";
+import { meetingsRouter } from "@/modules/meetings/server/procedures";
 import { createCallerFactory, createTRPCRouter } from "@/server/api/trpc";
 
 /**
@@ -8,8 +8,8 @@ import { createCallerFactory, createTRPCRouter } from "@/server/api/trpc";
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
-	post: postRouter,
 	agents: agentsRouter,
+	meetings: meetingsRouter,
 });
 
 // export type definition of API
