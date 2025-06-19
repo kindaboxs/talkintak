@@ -8,6 +8,10 @@ import {
 	MAX_PAGE_SIZE,
 	MIN_PAGE_SIZE,
 } from "@/constants";
+import {
+	meetingInsertSchema,
+	meetingUpdateSchema,
+} from "@/modules/meetings/schemas";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { meetings } from "@/server/db/schema";
 
@@ -22,6 +26,43 @@ const filtersInputSchema = z.object({
 });
 
 export const meetingsRouter = createTRPCRouter({
+	update: protectedProcedure
+		.input(meetingUpdateSchema)
+		.mutation(async ({ ctx, input }) => {
+			const [updateMeeting] = await ctx.db
+				.update(meetings)
+				.set(input)
+				.where(
+					and(eq(meetings.id, input.id), eq(meetings.userId, ctx.auth.user.id))
+				)
+				.returning();
+
+			if (!updateMeeting) {
+				throw new TRPCError({
+					code: "NOT_FOUND",
+					message: "Meeting not found",
+				});
+			}
+
+			return updateMeeting;
+		}),
+
+	create: protectedProcedure
+		.input(meetingInsertSchema)
+		.mutation(async ({ ctx, input }) => {
+			const [createMeeting] = await ctx.db
+				.insert(meetings)
+				.values({
+					...input,
+					userId: ctx.auth.user.id,
+				})
+				.returning();
+
+			// TODO: create stream call, upsert stream call
+
+			return createMeeting;
+		}),
+
 	getOne: protectedProcedure
 		.input(z.object({ id: z.string() }))
 		.query(async ({ ctx, input }) => {
